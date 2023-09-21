@@ -14,6 +14,7 @@ public class AutoCompletion implements TabCompleter {
             arguments.add("create");
             arguments.add("delete");
             arguments.add("list");
+            arguments.add("move");
             arguments.add("tp");
         }
 

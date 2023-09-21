@@ -1,7 +1,6 @@
 package test1.test1.commands;
 
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import test1.test1.Test1;
 
@@ -44,28 +41,15 @@ public class RegenBlock implements CommandExecutor, Listener {
             switch (args[0].toLowerCase()) {
                 case "create":
                     if (args.length > 1) {
-                        if (data.contains(args[1])) {
-                            Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
-                                    data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
+                        if(!data.contains(args[1])){
+                            setBlockToAir(data, args);
 
-                            delBlock.getBlock().setType(Material.AIR);
+                            addBlockToYml(data, regenBlock, args); // créer le regenBlock
+
+                            sender.sendMessage(ChatColor.GREEN + "RegenBlock '" + args[1] + "' has been created!");
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "RegenBlock '" + args[1] + "' already exists!");
                         }
-
-                        data.set(args[1] + ".world", regenBlock.getWorld().getName());
-                        data.set(args[1] + ".x", regenBlock.getBlockX());
-                        data.set(args[1] + ".y", regenBlock.getBlockY());
-                        data.set(args[1] + ".z", regenBlock.getBlockZ());
-                        try {
-                            data.save("./plugins/data.yml");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        if (regenBlock.getBlock().getType() != Material.COBBLESTONE) {
-                            regenBlock.getBlock().setType(Material.COBBLESTONE);
-                        }
-
-                        sender.sendMessage(ChatColor.GREEN + "RegenBlock '" + args[1] + "' has been created!");
 
                     } else {
                         sender.sendMessage(ChatColor.RED + "Usage /regenblock create {regenBlockName}");
@@ -75,10 +59,7 @@ public class RegenBlock implements CommandExecutor, Listener {
                 case "delete":
                     if (args.length > 1) {
                         if (data.contains(args[1])) {
-                            Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
-                                    data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
-
-                            delBlock.getBlock().setType(Material.AIR);
+                            setBlockToAir(data, args);
 
                             data.set(args[1], null);
                             try {
@@ -103,6 +84,23 @@ public class RegenBlock implements CommandExecutor, Listener {
                         ConfigurationSection l = data.getConfigurationSection(key);
 
                         sender.sendMessage("-" + Objects.requireNonNull(l.getCurrentPath()));
+                    }
+                    return true;
+
+                case "move":
+                    if (args.length > 1) {
+                        if(data.contains(args[1])){
+                            setBlockToAir(data, args);
+
+                            addBlockToYml(data, regenBlock, args); // créer le regenBlock
+
+                            sender.sendMessage(ChatColor.GREEN + "RegenBlock '" + args[1] + "' has been moved to your location!");
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "RegenBlock '" + args[1] + "' doesn't exists!");
+                        }
+
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Usage /regenblock move {regenBlockName}");
                     }
                     return true;
 
@@ -224,6 +222,31 @@ public class RegenBlock implements CommandExecutor, Listener {
             case 12:
                 location.getBlock().setType(Material.DIAMOND_ORE);
                 break;
+        }
+    }
+
+    public void setBlockToAir(FileConfiguration data, String args[]){
+        if (data.contains(args[1])) {
+            Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
+                    data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
+
+            delBlock.getBlock().setType(Material.AIR);
+        }
+    }
+
+    public void addBlockToYml(FileConfiguration data, Location regenBlock, String args[]){
+        data.set(args[1] + ".world", regenBlock.getWorld().getName());
+        data.set(args[1] + ".x", regenBlock.getBlockX());
+        data.set(args[1] + ".y", regenBlock.getBlockY());
+        data.set(args[1] + ".z", regenBlock.getBlockZ());
+        try {
+            data.save("./plugins/data.yml");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (regenBlock.getBlock().getType() != Material.COBBLESTONE) {
+            regenBlock.getBlock().setType(Material.COBBLESTONE);
         }
     }
 }
