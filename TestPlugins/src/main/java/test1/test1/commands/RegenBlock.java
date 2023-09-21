@@ -1,9 +1,6 @@
 package test1.test1.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,12 +42,13 @@ public class RegenBlock implements CommandExecutor, Listener {
                 case "create":
                     if (args.length > 1) {
                         if (data.contains(args[1])) {
-                            Location delBlock = new Location(player.getWorld(), data.getInt(args[1] + ".x"),
+                            Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
                                     data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
 
                             delBlock.getBlock().setType(Material.AIR);
                         }
 
+                        data.set(args[1] + ".world", regenBlock.getWorld().getName());
                         data.set(args[1] + ".x", regenBlock.getBlockX());
                         data.set(args[1] + ".y", regenBlock.getBlockY());
                         data.set(args[1] + ".z", regenBlock.getBlockZ());
@@ -74,7 +72,7 @@ public class RegenBlock implements CommandExecutor, Listener {
                 case "delete":
                     if (args.length > 1) {
                         if (data.contains(args[1])) {
-                            Location delBlock = new Location(player.getWorld(), data.getInt(args[1] + ".x"),
+                            Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
                                     data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
 
                             delBlock.getBlock().setType(Material.AIR);
@@ -113,6 +111,7 @@ public class RegenBlock implements CommandExecutor, Listener {
                             ConfigurationSection l = data.getConfigurationSection(key);
                             if (args[1].equals(Objects.requireNonNull(l.getCurrentPath()))) {
                                 if (data.contains(args[1])) {
+                                    World w = Bukkit.getWorld(data.getString(args[1] + ".world"));
                                     int x = l.getInt("x");
                                     int y = l.getInt("y");
                                     int z = l.getInt("z");
@@ -121,7 +120,7 @@ public class RegenBlock implements CommandExecutor, Listener {
                                     y++;
                                     double zf = z + 0.5;
 
-                                    Location telep = new Location(player.getWorld(), xf, y, zf);
+                                    Location telep = new Location(w, xf, y, zf);
                                     player.teleport(telep);
 
                                     sender.sendMessage(ChatColor.GREEN + "Teleported to RegenBlock '" + args[1] + "'!");
@@ -153,15 +152,14 @@ public class RegenBlock implements CommandExecutor, Listener {
     public void onBreak(BlockBreakEvent event){
         FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
 
-        Player player = event.getPlayer();
-
         for (String key : data.getKeys(false) ){
             //We are getting every key from our config.yml file
             ConfigurationSection l = data.getConfigurationSection(key);
+            World w = Bukkit.getWorld(l.getString("world"));
             int x = l.getInt("x");
             int y = l.getInt("y");
             int z = l.getInt("z");
-            Location regenBlock = new Location(player.getWorld(), x, y, z);
+            Location regenBlock = new Location(w, x, y, z);
 
             if(event.getBlock().getLocation().equals(regenBlock)){
                 Location location = event.getBlock().getLocation();
