@@ -1,0 +1,23 @@
+name: Test1
+version: '1.0-SNAPSHOT'
+main: test1.test1.Test1
+api-version: '1.20'
+commands:
+  fly:
+    description: Toggles flying for the command sender.
+    usage: /fly
+    aliases: [f, fly, flying]
+    permission: fly
+    permission-message: You do not have permission.
+
+  changehoe:
+    description: Changes diamond hoes into netherite hoes.
+    usage: /changehoe
+    aliases: ch
+    permission-message: You do not have permission.
+
+  regenblock:
+    description: Generates the infinite cobblestone block.
+    usage: /regenblock
+    aliases: [cbr, regenblock, rb]
+    permission-message: You do not have permission.
