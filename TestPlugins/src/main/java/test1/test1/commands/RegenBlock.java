@@ -1,6 +1,7 @@
 package test1.test1.commands;
 
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import test1.test1.Test1;
 
@@ -150,34 +153,45 @@ public class RegenBlock implements CommandExecutor, Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event){
-        FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
+        switch (event.getBlock().getType()){
+            case COBBLESTONE:
+            case STONE:
+            case IRON_ORE:
+            case COAL_ORE:
+            case GOLD_ORE:
+            case DIAMOND_ORE:
 
-        for (String key : data.getKeys(false) ){
-            //We are getting every key from our config.yml file
-            ConfigurationSection l = data.getConfigurationSection(key);
-            World w = Bukkit.getWorld(l.getString("world"));
-            int x = l.getInt("x");
-            int y = l.getInt("y");
-            int z = l.getInt("z");
-            Location regenBlock = new Location(w, x, y, z);
+                FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
 
-            if(event.getBlock().getLocation().equals(regenBlock)){
-                Location location = event.getBlock().getLocation();
+                for (String key : data.getKeys(false) ){
+                    //We are getting every key from our config.yml file
+                    ConfigurationSection l = data.getConfigurationSection(key);
+                    World w = Bukkit.getWorld(l.getString("world"));
+                    int x = l.getInt("x");
+                    int y = l.getInt("y");
+                    int z = l.getInt("z");
+                    Location regenBlock = new Location(w, x, y, z);
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        randomChangeBlock(location);
+                    if(event.getBlock().getLocation().equals(regenBlock)){
+                        Location location = event.getBlock().getLocation();
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                randomChangeBlock(location);
+                            }
+                        }.runTaskLater(Test1.getInstance(), 2);
                     }
-                }.runTaskLater(Test1.getInstance(), 2);
-            }
+                }
+                break;
         }
+
     }
 
     public void randomChangeBlock(Location location){
         Random random = new Random();
 
-        int number = random.nextInt(11);
+        int number = random.nextInt(13);
 
         switch (number){
             case 0:
@@ -194,15 +208,20 @@ public class RegenBlock implements CommandExecutor, Listener {
 
             case 6:
             case 7:
-                location.getBlock().setType(Material.IRON_ORE);
+                location.getBlock().setType(Material.COAL_ORE);
                 break;
 
             case 8:
             case 9:
-                location.getBlock().setType(Material.COAL_ORE);
+                location.getBlock().setType(Material.IRON_ORE);
                 break;
 
             case 10:
+            case 11:
+                location.getBlock().setType(Material.GOLD_ORE);
+                break;
+
+            case 12:
                 location.getBlock().setType(Material.DIAMOND_ORE);
                 break;
         }
