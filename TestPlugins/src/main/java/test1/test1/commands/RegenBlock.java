@@ -191,6 +191,37 @@ public class RegenBlock implements CommandExecutor, Listener {
 
         int number = random.nextInt(13);
 
+        int indice = -1;
+
+        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)){
+            indice++;
+        }
+
+        String[] blockName = new String[indice+1];
+        int[] blockChance = new int[indice+1];
+        int i = 0;
+
+        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)){
+            blockName[i] = Test1.getInstance().getConfig().getString("BlocksToGenerate." + key + ".block");
+            blockChance[i] = Test1.getInstance().getConfig().getInt("BlocksToGenerate." + key + ".block-chance");
+            i++;
+        }
+
+        System.out.println("-Test nom : " + blockName[indice] + " -Test Chance : " + blockChance[indice]);
+
+        /*
+        *   Il faut que ça regarde dans les 2 tableaux et que ça fasse en fonction de la chance d'apparition du block
+        *
+        */
+
+        int valMax = 0;
+
+        for(int i2 = 0; i2<blockChance.length; i2++){
+            valMax += blockChance[i2];
+        }
+
+        valMax -= 1;
+
         switch (number){
             case 0:
             case 1:

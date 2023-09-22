@@ -24,7 +24,7 @@ public final class Test1 extends JavaPlugin {
         getCommand("regenblock").setExecutor(new RegenBlock(this));
         getCommand("regenblock").setTabCompleter(new AutoCompletion());
 
-        //this.saveDefaultConfig(); // <-- create config.yml
+        this.saveDefaultConfig(); // <-- create config.yml
 
         //new ButtonFiesta(this);
 

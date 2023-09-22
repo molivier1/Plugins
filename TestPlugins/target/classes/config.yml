@@ -1,0 +1,8 @@
+BlocksToGenerate:
+  cobble:
+    block: COBBLESTONE
+    block-chance: 4
+
+  stone:
+    block: STONE
+    block-chance: 2
