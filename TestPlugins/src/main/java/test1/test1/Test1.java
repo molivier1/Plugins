@@ -6,6 +6,7 @@ import test1.test1.commands.AutoCompletion;
 import test1.test1.commands.Changehoe;
 import test1.test1.commands.RegenBlock;
 import test1.test1.commands.Fly;
+import test1.test1.handlers.ReplaceCrop;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public final class Test1 extends JavaPlugin {
         getCommand("changehoe").setExecutor(new Changehoe());
         getCommand("regenblock").setExecutor(new RegenBlock(this));
         getCommand("regenblock").setTabCompleter(new AutoCompletion());
+
+        new ReplaceCrop(this);
 
         this.saveDefaultConfig(); // <-- create config.yml
 

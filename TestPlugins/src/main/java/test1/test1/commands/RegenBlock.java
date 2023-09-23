@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import test1.test1.Test1;
 
@@ -145,40 +144,34 @@ public class RegenBlock implements CommandExecutor, Listener {
             }
         }
         else {
-            sender.sendMessage(ChatColor.RED + "Usage /regenblock {create/delete/list/tp}");
+            sender.sendMessage(ChatColor.RED + "Usage /regenblock {create/delete/list/move/tp}");
         }
         return true;
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent event){
-        String string;
-        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)) {
-            string = Test1.getInstance().getConfig().getString("BlocksToGenerate." + key + ".block");
 
-            if(event.getBlock().getType().equals(Material.matchMaterial(string))){
-                FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
+        FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
 
-                for (String key2 : data.getKeys(false) ){
-                    //We are getting every key from our config.yml file
-                    ConfigurationSection l = data.getConfigurationSection(key2);
-                    World w = Bukkit.getWorld(l.getString("world"));
-                    int x = l.getInt("x");
-                    int y = l.getInt("y");
-                    int z = l.getInt("z");
-                    Location regenBlock = new Location(w, x, y, z);
+        for (String key : data.getKeys(false) ){
+            //We are getting every key from our config.yml file
+            ConfigurationSection l = data.getConfigurationSection(key);
+            World w = Bukkit.getWorld(l.getString("world"));
+            int x = l.getInt("x");
+            int y = l.getInt("y");
+            int z = l.getInt("z");
+            Location regenBlock = new Location(w, x, y, z);
 
-                    if(event.getBlock().getLocation().equals(regenBlock)){
-                        Location location = event.getBlock().getLocation();
+            if(event.getBlock().getLocation().equals(regenBlock)){
+                Location location = event.getBlock().getLocation();
 
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                randomChangeBlock(location);
-                            }
-                        }.runTaskLater(Test1.getInstance(), 2);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        randomChangeBlock(location);
                     }
-                }
+                }.runTaskLater(Test1.getInstance(), 2);
             }
         }
     }
