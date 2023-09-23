@@ -1,3 +1,5 @@
+# At least one entry should be present for the plugin to work!
+# DO NOT REMOVE EVERYTHING!
 BlocksToGenerate:
   cobble:
     block: COBBLESTONE

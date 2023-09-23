@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import test1.test1.Test1;
 
@@ -23,7 +24,7 @@ public class RegenBlock implements CommandExecutor, Listener {
     public RegenBlock(Test1 plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String [] args){
         if(!(sender instanceof Player)){
@@ -151,19 +152,16 @@ public class RegenBlock implements CommandExecutor, Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event){
-        switch (event.getBlock().getType()){
-            case COBBLESTONE:
-            case STONE:
-            case IRON_ORE:
-            case COAL_ORE:
-            case GOLD_ORE:
-            case DIAMOND_ORE:
+        String string;
+        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)) {
+            string = Test1.getInstance().getConfig().getString("BlocksToGenerate." + key + ".block");
 
+            if(event.getBlock().getType().equals(Material.matchMaterial(string))){
                 FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
 
-                for (String key : data.getKeys(false) ){
+                for (String key2 : data.getKeys(false) ){
                     //We are getting every key from our config.yml file
-                    ConfigurationSection l = data.getConfigurationSection(key);
+                    ConfigurationSection l = data.getConfigurationSection(key2);
                     World w = Bukkit.getWorld(l.getString("world"));
                     int x = l.getInt("x");
                     int y = l.getInt("y");
@@ -181,15 +179,12 @@ public class RegenBlock implements CommandExecutor, Listener {
                         }.runTaskLater(Test1.getInstance(), 2);
                     }
                 }
-                break;
+            }
         }
-
     }
 
     public void randomChangeBlock(Location location){
         Random random = new Random();
-
-        int number = random.nextInt(13);
 
         int indice = -1;
 
@@ -207,53 +202,27 @@ public class RegenBlock implements CommandExecutor, Listener {
             i++;
         }
 
-        System.out.println("-Test nom : " + blockName[indice] + " -Test Chance : " + blockChance[indice]);
-
-        /*
-        *   Il faut que ça regarde dans les 2 tableaux et que ça fasse en fonction de la chance d'apparition du block
-        *
-        */
-
         int valMax = 0;
 
         for(int i2 = 0; i2<blockChance.length; i2++){
             valMax += blockChance[i2];
         }
 
-        valMax -= 1;
+        String[] tabBlocks = new String[valMax];
 
-        switch (number){
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                location.getBlock().setType(Material.COBBLESTONE);
-                break;
+        int val = 0;
 
-            case 4:
-            case 5:
-                location.getBlock().setType(Material.STONE);
-                break;
-
-            case 6:
-            case 7:
-                location.getBlock().setType(Material.COAL_ORE);
-                break;
-
-            case 8:
-            case 9:
-                location.getBlock().setType(Material.IRON_ORE);
-                break;
-
-            case 10:
-            case 11:
-                location.getBlock().setType(Material.GOLD_ORE);
-                break;
-
-            case 12:
-                location.getBlock().setType(Material.DIAMOND_ORE);
-                break;
+        for(int indiceBlockName = 0; indiceBlockName < blockName.length; indiceBlockName++){
+            for(int a = 0; a < blockChance[indiceBlockName]; a++){
+                tabBlocks[val] = blockName[indiceBlockName];
+                val++;
+            }
         }
+
+        int number = random.nextInt(valMax);
+
+        location.getBlock().setType(Material.matchMaterial(tabBlocks[number]));
+
     }
 
     public void setBlockToAir(FileConfiguration data, String args[]){
