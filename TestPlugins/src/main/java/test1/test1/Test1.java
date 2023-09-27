@@ -1,6 +1,7 @@
 package test1.test1;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import test1.test1.commands.AutoCompletion;
 import test1.test1.commands.Changehoe;
@@ -14,9 +15,12 @@ import java.io.IOException;
 public final class Test1 extends JavaPlugin {
 
     private static Test1 instance;
+    private FileConfiguration dataConfig;
+    private File dataConfigFile;
 
     @Override
     public void onEnable() {
+        instance = this;
         // Plugin startup logic
         Bukkit.getLogger().info("PLUGIN : TEST1 ENABLED");
 
@@ -29,6 +33,9 @@ public final class Test1 extends JavaPlugin {
 
         this.saveDefaultConfig(); // <-- create config.yml
 
+        dataConfigFile = new File(getDataFolder(), "data.yml");
+        reloadDataConfig();
+
         //new ButtonFiesta(this);
 
         //new CobbleRandom(this);
@@ -39,8 +46,18 @@ public final class Test1 extends JavaPlugin {
         //new PlayerHandler(this);
 
         //new HoeHandler(this);
+    }
 
-        instance = this;
+    public void reloadDataConfig(){
+        if(!dataConfigFile.exists()){
+            saveResource("data.yml", false);
+        }
+
+        dataConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(dataConfigFile);
+    }
+
+    public FileConfiguration getDataConfig(){
+        return dataConfig;
     }
 
     @Override

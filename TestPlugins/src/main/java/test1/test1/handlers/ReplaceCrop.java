@@ -34,7 +34,6 @@ public class ReplaceCrop implements Listener {
                         placeSeed(event, Material.WHEAT_SEEDS, Material.WHEAT);
                         break;
                     case CARROTS:
-                        event.getPlayer().sendMessage("Carrot broke");
                         placeSeed(event, Material.CARROT, Material.CARROTS);
                         break;
                     case POTATOES:

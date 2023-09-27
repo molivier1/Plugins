@@ -31,7 +31,7 @@ public class RegenBlock implements CommandExecutor, Listener {
             return true;
         }
 
-        FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
+        FileConfiguration data = Test1.getInstance().getDataConfig();
 
         Player player = (Player) sender;
 
@@ -63,7 +63,7 @@ public class RegenBlock implements CommandExecutor, Listener {
 
                             data.set(args[1], null);
                             try {
-                                data.save("./plugins/data.yml");
+                                data.save("./plugins/Test1/data.yml");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -152,7 +152,7 @@ public class RegenBlock implements CommandExecutor, Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event){
 
-        FileConfiguration data = YamlConfiguration.loadConfiguration(new File("./plugins/data.yml"));
+        FileConfiguration data = Test1.getInstance().getDataConfig();
 
         for (String key : data.getKeys(false) ){
             //We are getting every key from our config.yml file
@@ -233,7 +233,7 @@ public class RegenBlock implements CommandExecutor, Listener {
         data.set(args[1] + ".y", regenBlock.getBlockY());
         data.set(args[1] + ".z", regenBlock.getBlockZ());
         try {
-            data.save("./plugins/data.yml");
+            data.save("./plugins/Test1/data.yml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
