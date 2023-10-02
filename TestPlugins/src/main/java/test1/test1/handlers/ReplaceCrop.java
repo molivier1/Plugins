@@ -42,6 +42,8 @@ public class ReplaceCrop implements Listener {
                     case NETHER_WART:
                         placeSeed(event, Material.NETHER_WART, Material.NETHER_WART);
                         break;
+                    default:
+                        break;
                 }
             }
         }

@@ -7,6 +7,7 @@ import test1.test1.commands.AutoCompletion;
 import test1.test1.commands.Changehoe;
 import test1.test1.commands.RegenBlock;
 import test1.test1.commands.Fly;
+import test1.test1.handlers.BetterFurnace;
 import test1.test1.handlers.ReplaceCrop;
 
 import java.io.File;
@@ -35,6 +36,8 @@ public final class Test1 extends JavaPlugin {
 
         dataConfigFile = new File(getDataFolder(), "data.yml");
         reloadDataConfig();
+
+        new BetterFurnace(this);
 
         //new ButtonFiesta(this);
 

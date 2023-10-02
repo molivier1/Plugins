@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +13,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import test1.test1.Test1;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
@@ -102,6 +100,13 @@ public class RegenBlock implements CommandExecutor, Listener {
                     } else {
                         sender.sendMessage(ChatColor.RED + "Usage /regenblock move {regenBlockName}");
                     }
+                    return true;
+
+                case "reload":
+                    Test1.getInstance().reloadConfig();
+                    Test1.getInstance().reloadDataConfig();
+
+                    sender.sendMessage(ChatColor.GREEN + "RegenBlock config and data files reloaded!");
                     return true;
 
                 case "tp":
