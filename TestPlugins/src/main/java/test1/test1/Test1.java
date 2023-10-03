@@ -8,7 +8,6 @@ import test1.test1.handlers.BetterFurnace;
 import test1.test1.handlers.ReplaceCrop;
 
 import java.io.File;
-import java.io.IOException;
 
 public final class Test1 extends JavaPlugin {
 
@@ -30,7 +29,7 @@ public final class Test1 extends JavaPlugin {
         getCommand("regenblock").setTabCompleter(new AutoCompletion());
 
         getCommand("betterfurnace").setExecutor(new BetterFurnace(this));
-        getCommand("betterfurnace").setTabCompleter(new BFAutoCompletion());
+        getCommand("betterfurnace").setTabCompleter(new AutoCompletion());
 
         new ReplaceCrop(this);
 
@@ -54,27 +53,27 @@ public final class Test1 extends JavaPlugin {
         //new HoeHandler(this);
     }
 
-    public void reloadDataConfig(){
-        if(!dataConfigFile.exists()){
+    public void reloadDataConfig() {
+        if (!dataConfigFile.exists()) {
             saveResource("data.yml", false);
         }
 
         dataConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(dataConfigFile);
     }
 
-    public FileConfiguration getDataConfig(){
+    public FileConfiguration getDataConfig() {
         return dataConfig;
     }
 
-    public void reloadFurnaceConfig(){
-        if(!furnaceConfigFile.exists()){
+    public void reloadFurnaceConfig() {
+        if (!furnaceConfigFile.exists()) {
             saveResource("furnace.yml", false);
         }
 
         furnaceConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(furnaceConfigFile);
     }
 
-    public FileConfiguration getFurnaceConfig(){
+    public FileConfiguration getFurnaceConfig() {
         return furnaceConfig;
     }
 

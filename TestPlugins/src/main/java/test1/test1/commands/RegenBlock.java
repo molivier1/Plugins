@@ -18,13 +18,13 @@ import java.util.Objects;
 import java.util.Random;
 
 public class RegenBlock implements CommandExecutor, Listener {
-    public RegenBlock(Test1 plugin){
+    public RegenBlock(Test1 plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-    
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String [] args){
-        if(!(sender instanceof Player)){
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can run this command.");
             return true;
         }
@@ -35,11 +35,11 @@ public class RegenBlock implements CommandExecutor, Listener {
 
         Location regenBlock = player.getLocation();
 
-        if(args.length > 0) {
+        if (args.length > 0) {
             switch (args[0].toLowerCase()) {
                 case "create":
                     if (args.length > 1) {
-                        if(!data.contains(args[1])){
+                        if (!data.contains(args[1])) {
                             setBlockToAir(data, args);
 
                             addBlockToYml(data, regenBlock, args); // créer le regenBlock
@@ -87,7 +87,7 @@ public class RegenBlock implements CommandExecutor, Listener {
 
                 case "move":
                     if (args.length > 1) {
-                        if(data.contains(args[1])){
+                        if (data.contains(args[1])) {
                             setBlockToAir(data, args);
 
                             addBlockToYml(data, regenBlock, args); // créer le regenBlock
@@ -147,19 +147,18 @@ public class RegenBlock implements CommandExecutor, Listener {
                     sender.sendMessage(ChatColor.RED + "Usage /regenblock {create/delete/list/tp}");
                     return true;
             }
-        }
-        else {
+        } else {
             sender.sendMessage(ChatColor.RED + "Usage /regenblock {create/delete/list/move/tp}");
         }
         return true;
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event){
+    public void onBreak(BlockBreakEvent event) {
 
         FileConfiguration data = Test1.getInstance().getDataConfig();
 
-        for (String key : data.getKeys(false) ){
+        for (String key : data.getKeys(false)) {
             //We are getting every key from our config.yml file
             ConfigurationSection l = data.getConfigurationSection(key);
             World w = Bukkit.getWorld(l.getString("world"));
@@ -168,7 +167,7 @@ public class RegenBlock implements CommandExecutor, Listener {
             int z = l.getInt("z");
             Location regenBlock = new Location(w, x, y, z);
 
-            if(event.getBlock().getLocation().equals(regenBlock)){
+            if (event.getBlock().getLocation().equals(regenBlock)) {
                 Location location = event.getBlock().getLocation();
 
                 new BukkitRunnable() {
@@ -181,20 +180,20 @@ public class RegenBlock implements CommandExecutor, Listener {
         }
     }
 
-    public void randomChangeBlock(Location location){
+    public void randomChangeBlock(Location location) {
         Random random = new Random();
 
         int indice = -1;
 
-        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)){
+        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)) {
             indice++;
         }
 
-        String[] blockName = new String[indice+1];
-        int[] blockChance = new int[indice+1];
+        String[] blockName = new String[indice + 1];
+        int[] blockChance = new int[indice + 1];
         int i = 0;
 
-        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)){
+        for (String key : Test1.getInstance().getConfig().getConfigurationSection("BlocksToGenerate").getKeys(false)) {
             blockName[i] = Test1.getInstance().getConfig().getString("BlocksToGenerate." + key + ".block");
             blockChance[i] = Test1.getInstance().getConfig().getInt("BlocksToGenerate." + key + ".block-chance");
             i++;
@@ -202,7 +201,7 @@ public class RegenBlock implements CommandExecutor, Listener {
 
         int valMax = 0;
 
-        for(int i2 = 0; i2<blockChance.length; i2++){
+        for (int i2 = 0; i2 < blockChance.length; i2++) {
             valMax += blockChance[i2];
         }
 
@@ -210,8 +209,8 @@ public class RegenBlock implements CommandExecutor, Listener {
 
         int val = 0;
 
-        for(int indiceBlockName = 0; indiceBlockName < blockName.length; indiceBlockName++){
-            for(int a = 0; a < blockChance[indiceBlockName]; a++){
+        for (int indiceBlockName = 0; indiceBlockName < blockName.length; indiceBlockName++) {
+            for (int a = 0; a < blockChance[indiceBlockName]; a++) {
                 tabBlocks[val] = blockName[indiceBlockName];
                 val++;
             }
@@ -223,7 +222,7 @@ public class RegenBlock implements CommandExecutor, Listener {
 
     }
 
-    public void setBlockToAir(FileConfiguration data, String args[]){
+    public void setBlockToAir(FileConfiguration data, String args[]) {
         if (data.contains(args[1])) {
             Location delBlock = new Location(Bukkit.getWorld(data.getString(args[1] + ".world")), data.getInt(args[1] + ".x"),
                     data.getInt(args[1] + ".y"), data.getInt(args[1] + ".z"));
@@ -232,7 +231,7 @@ public class RegenBlock implements CommandExecutor, Listener {
         }
     }
 
-    public void addBlockToYml(FileConfiguration data, Location regenBlock, String args[]){
+    public void addBlockToYml(FileConfiguration data, Location regenBlock, String args[]) {
         data.set(args[1] + ".world", regenBlock.getWorld().getName());
         data.set(args[1] + ".x", regenBlock.getBlockX());
         data.set(args[1] + ".y", regenBlock.getBlockY());
