@@ -3,10 +3,7 @@ package test1.test1;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import test1.test1.commands.AutoCompletion;
-import test1.test1.commands.Changehoe;
-import test1.test1.commands.RegenBlock;
-import test1.test1.commands.Fly;
+import test1.test1.commands.*;
 import test1.test1.handlers.BetterFurnace;
 import test1.test1.handlers.ReplaceCrop;
 
@@ -18,6 +15,8 @@ public final class Test1 extends JavaPlugin {
     private static Test1 instance;
     private FileConfiguration dataConfig;
     private File dataConfigFile;
+    private FileConfiguration furnaceConfig;
+    private File furnaceConfigFile;
 
     @Override
     public void onEnable() {
@@ -30,6 +29,9 @@ public final class Test1 extends JavaPlugin {
         getCommand("regenblock").setExecutor(new RegenBlock(this));
         getCommand("regenblock").setTabCompleter(new AutoCompletion());
 
+        getCommand("betterfurnace").setExecutor(new BetterFurnace(this));
+        getCommand("betterfurnace").setTabCompleter(new BFAutoCompletion());
+
         new ReplaceCrop(this);
 
         this.saveDefaultConfig(); // <-- create config.yml
@@ -37,7 +39,8 @@ public final class Test1 extends JavaPlugin {
         dataConfigFile = new File(getDataFolder(), "data.yml");
         reloadDataConfig();
 
-        new BetterFurnace(this);
+        furnaceConfigFile = new File(getDataFolder(), "furnace.yml");
+        reloadFurnaceConfig();
 
         //new ButtonFiesta(this);
 
@@ -61,6 +64,18 @@ public final class Test1 extends JavaPlugin {
 
     public FileConfiguration getDataConfig(){
         return dataConfig;
+    }
+
+    public void reloadFurnaceConfig(){
+        if(!furnaceConfigFile.exists()){
+            saveResource("furnace.yml", false);
+        }
+
+        furnaceConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(furnaceConfigFile);
+    }
+
+    public FileConfiguration getFurnaceConfig(){
+        return furnaceConfig;
     }
 
     @Override

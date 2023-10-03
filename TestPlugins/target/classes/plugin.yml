@@ -21,3 +21,9 @@ commands:
     usage: /regenblock
     aliases: [cbr, regenblock, rb]
     permission-message: You do not have permission.
+
+  betterfurnace:
+    description: Add better furnaces.
+    usage: /betterfurnace
+    aliases: [betterfurnace, bf]
+    permission-message: You do not have permission.
